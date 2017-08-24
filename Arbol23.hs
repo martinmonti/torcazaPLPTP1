@@ -44,7 +44,7 @@ foldA23 f g (Tres b b ar1 ar2 ar3) = g b (g b (foldA23 f g ar1) (foldA23 f g ar2
 
 --Lista en preorden de los internos del árbol.
 internos::Arbol23 a b->[b]
-internos = foldA23 (\x -> [x]) (\b x y -> b : x ++ y)
+internos = foldA23 (\x -> []) (\b x y -> b : x ++ y)
 
 --Lista las hojas de izquierda a derecha.
 hojas::Arbol23 a b->[a]
