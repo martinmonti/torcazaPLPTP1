@@ -76,7 +76,7 @@ vacio::Comp clave->Diccionario clave valor
 vacio c = Dicc c Nothing
 
 definir::clave->valor->Diccionario clave valor->Diccionario clave valor
-definir = undefined
+definir c v d = insertar c v cmp d estructura d
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener = undefined
