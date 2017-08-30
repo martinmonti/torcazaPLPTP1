@@ -36,10 +36,10 @@ pad i = replicate i ' '
 {- Funciones pedidas. -}
 
 --foldA23::
-foldA23 ::(a->d)->(b->b->b->d)->(b->b->b->b->b->d)->Arbol23 a b->d
+foldA23 ::(a->c)->(b->c->c->c)->(b->b->c->c->c->c)->Arbol23 a b->c
 foldA23 f g h (Hoja a) = f a
 foldA23 f g h (Dos b ar1 ar2) = g b (foldA23 f g h ar1) (foldA23 f g h ar2)
-foldA23 f g h (Tres b b ar1 ar2 ar3) = h b b (foldA23 f g h ar1) (foldA23 f g h ar2) (foldA23 f g h ar3) 
+foldA23 f g h (Tres b c ar1 ar2 ar3) = h b c (foldA23 f g h ar1) (foldA23 f g h ar2) (foldA23 f g h ar3) 
 
 
 --Lista en preorden de los internos del árbol.
@@ -56,7 +56,9 @@ esHoja ar = case ar of
 		  		otherwise -> False
 
 mapA23::(a->c)->(b->d)->Arbol23 a b->Arbol23 c d
-mapA23 = undefined
+mapA23 f g arb = foldA23 (\val -> (Hoja (f val)))
+		 	 (\val ai ad ->(Dos (g val) ai ad))
+		 	 (\val val2 ai ac ad ->(Tres (g val) (g val2) ai ac ad)) arb
 
 --Ejemplo de uso de mapA23.
 --Incrementa en 1 el valor de las hojas.
@@ -66,13 +68,19 @@ incrementarHojas = mapA23 (+1) id
 
 --Trunca el árbol hasta un determinado nivel. Cuando llega a 0, reemplaza el resto del árbol por una hoja con el valor indicado.
 --Funciona para árboles infinitos.
+
 truncar::a->Integer->Arbol23 a b->Arbol23 a b
-truncar = undefined
+truncar e lim arb = if (lim==0) then (Hoja e) else 
+			foldA23 (\val ->(\i -> if(i==0) then (Hoja e) else (Hoja val) ))
+		 	    (\val ai ad ->(\i-> if (i-1==0) then (Dos val (Hoja e) (Hoja e)) else (Dos val (ai (i-1)) (ad (i-1))) ))
+		 	    (\val val2 ai ac ad ->(\i-> if (i-1==0) then (Tres val val2 (Hoja e) (Hoja e) (Hoja e)) else (Tres val val2 (ai (i-1)) (ac (i-1)) (ad (i-1))) )) arb lim
 
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
 evaluar::Arbol23 a (a->a->a)->a
-evaluar = undefined
+evaluar a = foldA23 (\val -> val)
+		    (\val ai ad -> val ai ad)
+		    (\val val2 ai ac ad ->(val2 (val ai ac) ad)) a
 
 --Ejemplo:
 --evaluar (truncar 0 6 arbolito3) = 22 = (1*2-3)+(2*3-4)+(3*4-5)+(4*5-6)
@@ -93,4 +101,6 @@ arbolito3 = Dos (+) (Tres (*) (-) (Hoja 1) (Hoja 2) (Hoja 3)) (incrementarHojas 
 arbolito4::Arbol23 Int Char
 arbolito4 = Dos 'p' (Dos 'l' (Dos 'g' (Hoja 5) (Hoja 2)) (Tres 'r' 'a' (Hoja 0)(Hoja 1)(Hoja 12))) 
                     (Dos 'p' (Tres 'n' 'd' (Hoja (-3))(Hoja 4)(Hoja 9)) (Dos 'e' (Hoja 20)(Hoja 7)))
+
+
 
