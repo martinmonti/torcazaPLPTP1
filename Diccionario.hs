@@ -82,7 +82,7 @@ obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener = undefined
 
 claves::Diccionario clave valor->[clave]
-claves = undefined
+claves = internos estructura
 
 {- Diccionarios de prueba: -}
 
