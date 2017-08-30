@@ -36,19 +36,19 @@ pad i = replicate i ' '
 {- Funciones pedidas. -}
 
 --foldA23::
-foldA23 :: ()->()->Arbol23->a
-foldA23 f g (Hoja a) = f a
-foldA23 f g (Dos b ar1 ar2) = g b (foldA23 f g ar1) (foldA23 f g ar2)
-foldA23 f g (Tres b b ar1 ar2 ar3) = g b (g b (foldA23 f g ar1) (foldA23 f g ar2)) (foldA23 f g ar3) 
+foldA23 ::(a->d)->(b->b->b->d)->(b->b->b->b->b->d)->Arbol23 a b->d
+foldA23 f g h (Hoja a) = f a
+foldA23 f g h (Dos b ar1 ar2) = g b (foldA23 f g h ar1) (foldA23 f g h ar2)
+foldA23 f g h (Tres b b ar1 ar2 ar3) = h b b (foldA23 f g h ar1) (foldA23 f g h ar2) (foldA23 f g h ar3) 
 
 
 --Lista en preorden de los internos del árbol.
 internos::Arbol23 a b->[b]
-internos = foldA23 (\x -> []) (\b x y -> b : x ++ y)
+internos = foldA23 (\x -> []) (\b x y -> b : x ++ y) (\b c x y z -> b : c : (x ++ y ++ z))
 
 --Lista las hojas de izquierda a derecha.
 hojas::Arbol23 a b->[a]
-hojas = foldA23 (\x -> [x]) (\b x y -> x ++ y)
+hojas = foldA23 (\x -> [x]) (\b x y -> x ++ y) (\b c x y z -> x ++ y ++ z)
 
 esHoja::Arbol23 a b->Bool
 esHoja ar = case ar of
