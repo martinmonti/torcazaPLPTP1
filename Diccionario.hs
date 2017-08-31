@@ -76,13 +76,13 @@ vacio::Comp clave->Diccionario clave valor
 vacio c = Dicc c Nothing
 
 definir::clave->valor->Diccionario clave valor->Diccionario clave valor
-definir c v d = insertar c v cmp d estructura d
+definir c v d = Dicc (cmp d) (Just (insertar c v (cmp d) (fromJust (estructura d))))
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener = undefined
 
 claves::Diccionario clave valor->[clave]
-claves = internos estructura
+claves d = internos (fromJust (estructura d))
 
 {- Diccionarios de prueba: -}
 
