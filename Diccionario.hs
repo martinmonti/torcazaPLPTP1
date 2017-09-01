@@ -79,7 +79,17 @@ definir::clave->valor->Diccionario clave valor->Diccionario clave valor
 definir c v d = Dicc (cmp d) (Just (insertar c v (cmp d) (fromJust (estructura d))))
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
-obtener = undefined
+obtener c d = foldA23 (obtenerHoja c) (obtenerADos c (cmp d)) (obtenerATres c (cmp d)) a23
+	where a23 = fromJust (estructura d)
+
+obtenerHoja::Eq clave=>clave->(clave,Maybe valor)->Maybe valor
+obtenerHoja c1 (c2,v) = if c1==c2 then v else Nothing
+
+obtenerADos::Eq clave=>clave->Comp clave->clave->Maybe valor->Maybe valor->Maybe valor
+obtenerADos c1 comp c2 a23Izq a23Der = if comp c2 c1 then a23Izq else a23Der
+
+obtenerATres::Eq clave=>clave->Comp clave->clave->clave->Maybe valor->Maybe valor->Maybe valor->Maybe valor
+obtenerATres c1 comp c2 c3 a23Izq a23Med a23Der = if comp c2 c1 then a23Izq else if comp c3 c1 then a23Med else a23Der
 
 claves::Diccionario clave valor->[clave]
 claves d = internos (fromJust (estructura d))
