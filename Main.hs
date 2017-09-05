@@ -8,7 +8,7 @@ import Test.HUnit
 {- Función a implementar. -}
 
 búsquedaDelTesoro::Eq a=>a->(a->Bool)->Diccionario a a->Maybe a 
-búsquedaDelTesoro = undefined
+búsquedaDelTesoro pista esTesoro d = Just (head (filter esTesoro (iterate (\x -> fromJust (obtener x d)) pista)))
 
 {- Diccionarios de prueba: -}
 
