@@ -115,6 +115,12 @@ arbolitoTest = Tres 0 1
 diccTest=Dicc (<) (Just arbolitoTest)
 
 
+arbolitoTest2::Arbol23 (Int, Char) Int
+arbolitoTest2 = (Tres 5 8 (Hoja (4,'a')) (Hoja (7,'e')) (Dos 10 (Hoja (9,'s')) (Hoja (17,'w'))))
+       
+diccTest2=Dicc (>) (Just arbolitoTest2)
+
+
 dicc1::Diccionario Int String
 dicc1 = definirVarias [(0,"Hola"),(-10,"Chau"),(15,"Felicidades"),(2,"etc."),(9,"a")] (vacio (<))
 
