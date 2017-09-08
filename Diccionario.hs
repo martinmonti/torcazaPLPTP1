@@ -76,7 +76,10 @@ vacio::Comp clave->Diccionario clave valor
 vacio c = Dicc c Nothing
 
 definir::clave->valor->Diccionario clave valor->Diccionario clave valor
-definir c v d = Dicc (cmp d) (Just (insertar c v (cmp d) (fromJust (estructura d))))
+definir c v d = case (estructura d) of 
+ Nothing -> Dicc (cmp d) (Just (Hoja (c, v))) 
+ Just arbol -> Dicc (cmp d) (Just (insertar c v (cmp d) (fromJust (estructura d))))
+
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener c d = case (estructura d) of 
@@ -90,10 +93,10 @@ obtenerHoja::Eq clave=>clave->(clave,valor)->Maybe valor
 obtenerHoja c1 (c2,v) = if c1==c2 then Just v else Nothing
 
 obtenerADos::Eq clave=>clave->Comp clave->clave->Maybe valor->Maybe valor->Maybe valor
-obtenerADos c1 comp c2 a23Izq a23Der = if comp c2 c1 then a23Izq else a23Der
+obtenerADos c1 comp c2 a23Izq a23Der = if comp c1 c2 then a23Izq else a23Der
 
 obtenerATres::Eq clave=>clave->Comp clave->clave->clave->Maybe valor->Maybe valor->Maybe valor->Maybe valor
-obtenerATres c1 comp c2 c3 a23Izq a23Med a23Der = if comp c2 c1 then a23Izq else if comp c3 c1 then a23Med else a23Der
+obtenerATres c1 comp c2 c3 a23Izq a23Med a23Der = if comp c1 c2 then a23Izq else if comp c1 c3 then a23Med else a23Der
 
 --claves::Diccionario clave valor->[clave]
 
@@ -115,11 +118,13 @@ arbolitoTest = Tres 0 1
 diccTest=Dicc (<) (Just arbolitoTest)
 
 
+
 arbolitoTest2::Arbol23 (Int, Char) Int
 arbolitoTest2 = (Tres 5 8 (Hoja (4,'a')) (Hoja (7,'e')) (Dos 10 (Hoja (9,'s')) (Hoja (17,'w'))))
        
-diccTest2=Dicc (>) (Just arbolitoTest2)
-
+diccTest2=Dicc (<) (Just arbolitoTest2)
+--test: obtener 20 ( (definir 10 'x' (definir 20 'n' diccTest2)))
+--test: obtener 10 ( (definir 10 'x' (definir 20 'n' diccTest2)))
 
 dicc1::Diccionario Int String
 dicc1 = definirVarias [(0,"Hola"),(-10,"Chau"),(15,"Felicidades"),(2,"etc."),(9,"a")] (vacio (<))
