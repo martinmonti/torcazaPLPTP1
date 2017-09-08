@@ -78,12 +78,16 @@ vacio c = Dicc c Nothing
 definir::clave->valor->Diccionario clave valor->Diccionario clave valor
 definir c v d = Dicc (cmp d) (Just (insertar c v (cmp d) (fromJust (estructura d))))
 
---obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
-obtener c d = foldA23 (obtenerHoja c) (obtenerADos c (cmp d)) (obtenerATres c (cmp d)) a23
-	where a23 = fromJust (estructura d)
+obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
+obtener c d = case (estructura d) of 
+ Nothing -> Nothing 
+ Just arbol -> obtenerAux c (cmp d) arbol
 
-obtenerHoja::Eq clave=>clave->(clave,Maybe valor)->Maybe valor
-obtenerHoja c1 (c2,v) = if c1==c2 then v else Nothing
+obtenerAux::Eq clave=>clave->Comp clave->Arbol23 (clave,valor) clave->Maybe valor
+obtenerAux c cmp a = foldA23 (obtenerHoja c) (obtenerADos c cmp) (obtenerATres c cmp) a
+
+obtenerHoja::Eq clave=>clave->(clave,valor)->Maybe valor
+obtenerHoja c1 (c2,v) = if c1==c2 then Just v else Nothing
 
 obtenerADos::Eq clave=>clave->Comp clave->clave->Maybe valor->Maybe valor->Maybe valor
 obtenerADos c1 comp c2 a23Izq a23Der = if comp c2 c1 then a23Izq else a23Der
@@ -94,11 +98,11 @@ obtenerATres c1 comp c2 c3 a23Izq a23Med a23Der = if comp c2 c1 then a23Izq else
 --claves::Diccionario clave valor->[clave]
 
 claves::Diccionario clave valor -> [clave]
-claves d = case (estructura d) of
-                   	Nothing -> []
-                   	(Just z) -> clavesAux z
+claves d = case (estructura d) of 
+ Nothing -> []
+ (Just z) -> clavesAux z
 
-clavesAux::Arbol23 (clave, valor) clave -> [clave]
+clavesAux::Arbol23 (clave,valor) clave -> [clave]
 clavesAux arb = foldA23 (\x -> [fst x]) (\b x y -> x ++ y) (\b c x y z -> x ++ y ++ z) arb
 
 {- Diccionarios de prueba: -}
@@ -119,4 +123,3 @@ dicc2 = definirVarias [("inicio","casa"),("auto","flores"),("calle","auto"),("ca
 
 dicc3::Diccionario Int String
 dicc3 = definirVarias [(0,"Hola"),(-10,"Chau"),(15,"Felicidades"),(2,"etc."),(9,"a")] (vacio (\x y->x `mod` 5 < y `mod` 5))
-
