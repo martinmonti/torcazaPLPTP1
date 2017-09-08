@@ -8,8 +8,18 @@ import Test.HUnit
 {- Función a implementar. -}
 
 búsquedaDelTesoro::Eq a=>a->(a->Bool)->Diccionario a a->Maybe a 
-búsquedaDelTesoro pista esTesoro d = Just (head (filter esTesoro (iterate (\x -> fromJust (obtener x d)) pista)))
+búsquedaDelTesoro pista esTesoro d = (head (filter (esTesoroONothing esTesoro) (iterate (obtenerONothing d) (Just pista))))
 
+esTesoroONothing::(a->Bool)->Maybe a->Bool
+esTesoroONothing esTesoro Nothing = True
+esTesoroONothing esTesoro (Just posibleTesoro) = esTesoro posibleTesoro
+
+obtenerONothing::Eq a=>Diccionario a a -> Maybe a -> Maybe a
+obtenerONothing d c = case c of
+ Nothing -> Nothing
+ Just c -> obtener c d
+ 
+ 
 {- Diccionarios de prueba: -}
 
 dicc1::Diccionario Int String
