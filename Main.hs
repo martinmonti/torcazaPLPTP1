@@ -18,7 +18,15 @@ obtenerONothing::Eq a=>Diccionario a a -> Maybe a -> Maybe a
 obtenerONothing d c = case c of
  Nothing -> Nothing
  Just c -> obtener c d
- 
+
+{- Arbol de prueba: -}
+
+arbolDeg::Arbol23 Char Int
+arbolDeg = Dos 1 (Hoja 'a') (Dos 2 (Hoja 'b') (Tres 3 4 (Hoja 'c') (Hoja 'd') (Dos 5 (Hoja 'e') (Hoja 'f'))))
+arbolOps::Arbol23 Int (Int->Int->Int)
+arbolOps = Tres (+) (*) (Dos (-) (Hoja 10) (Hoja 20)) (Dos (-) (Hoja 10) (Hoja 30)) (Tres (*) (*) (Hoja 2) (Hoja 2) (Hoja 2))
+arbolOps2::Arbol23 Int (Int->Int->Int)
+arbolOps2 = Tres (+) (*) (Dos (+) (Hoja 10) (Hoja 20)) (Dos (+) (Hoja 10) (Hoja 30)) (Tres (*) (*) (Hoja 2) (Hoja 2) (Hoja 2))
  
 {- Diccionarios de prueba: -}
 
@@ -51,19 +59,48 @@ testsEj2 = test [
   [0,1,2,3,4,5,6,7] ~=? internos arbolito1,
   "abcdefghi" ~=? hojas arbolito1,
   [True,False,True] ~=? internos arbolito2,
-  [1,2,3,2,3,4,3,4,5,4] ~=? take 10 (hojas arbolito3)
+  [1,2,3,2,3,4,3,4,5,4] ~=? take 10 (hojas arbolito3),
+  [5,2,0,1,12,(-3),4,9,20,7] ~=? hojas (arbolito4),
+  ['p','l','g','r','a','p','n','d','e'] ~=? internos (arbolito4),
+  [True, False, True] ~=? internos (arbolito2),
+  True ~=? esHoja (Hoja 'a'),
+  False ~=? esHoja (Dos 3 (Hoja 'a') (Hoja 'a')),
+  False ~=? esHoja (Tres 3 5 (Hoja 'a') (Hoja 'a') (Hoja 'a')),
+  ['a','b','c','d','e','f'] ~=? hojas (arbolDeg),
+  [1,2,3,4,5] ~=? internos (arbolDeg)
   ]
 
 testsEj3 = test [
-  [0,1,-1,5] ~=? hojas (incrementarHojas arbolito2)
+  [0,1,-1,5] ~=? hojas (incrementarHojas arbolito2),
+  [-4,0,-8,16] ~=? hojas (mapA23 (\x-> x*4) id arbolito2),
+  [False,True,False] ~=? internos (mapA23 id (\x->not x) arbolito2),
+  ['w','w','w','w','w','w'] ~=? hojas (mapA23 (\x-> 'w') id arbolDeg),
+  [0,0,0,0,0] ~=? internos (mapA23 id (\x-> 0) arbolDeg)
   ]
 
 testsEj4 = test [
-  [1,2,3,2,3,4,3,4,5,4,5,6,0,0,0,0,0] ~=? hojas (truncar 0 6 arbolito3)
+  [1,2,3,2,3,4,3,4,5,4,5,6,0,0,0,0,0] ~=? hojas (truncar 0 6 arbolito3),
+  [0,0,0,0,0,0,0,0,0,0] ~=? hojas (truncar 0 3 arbolito4),
+  [1,1,1,1] ~=? hojas (truncar 1 2 arbolito4),
+  ['w','w','w','w','w','w','w'] ~=? hojas (truncar 'w' 2 arbolito1),
+  ['w'] ~=? hojas (truncar 'w' 0 arbolito1),
+  [99] ~=? hojas (truncar 99 0 arbolito4),
+  [99,99] ~=? hojas (truncar 99 1 arbolito4),
+  ['p'] ~=? internos (truncar 99 1 arbolito4),
+  [] ~=? internos (truncar 99 0 arbolito4),
+  [1] ~=? internos (truncar 'a' 1 arbolDeg),
+  [1,2,3,4] ~=? internos (truncar 'a' 3 arbolDeg),
+  ['a','b','a','a','a'] ~=? hojas (truncar 'a' 3 arbolDeg)
   ]
 
 testsEj5 = test [
-  22 ~=? evaluar (truncar 0 6 arbolito3)
+  45 ~=? evaluar (truncar 0 7 arbolito3),
+  22 ~=? evaluar (truncar 0 6 arbolito3),
+  8 ~=? evaluar (truncar 0 5 arbolito3),
+  1 ~=? evaluar (truncar 0 4 arbolito3),
+  (-1) ~=? evaluar (truncar 0 3 arbolito3),
+  (-240) ~=? evaluar arbolOps,
+  (560) ~=? evaluar arbolOps2
   ]
 
 testsEj6 = test [
