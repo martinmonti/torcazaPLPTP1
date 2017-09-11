@@ -119,7 +119,10 @@ testsEj7 = test [
   ]
 
 testsEj8 = test [
-  0 ~=? 0 --Cambiar esto por tests verdaderos.
+  Nothing ~=? obtener "algo" diccVacio,
+  Nothing ~=? obtener "algo" dicc2,
+  Just "Felicidades" ~=? obtener 15 dicc1,
+  Just "cartones" ~=? obtener "flores" (definir "flores" "cartones" dicc2)
   ]
   
 testsEj9 = test [
