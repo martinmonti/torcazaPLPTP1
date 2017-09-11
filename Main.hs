@@ -39,6 +39,13 @@ dicc2 = definirVarias [("inicio","casa"),("auto","flores"),("calle","auto"),("ca
 dicc3::Diccionario Int String
 dicc3 = definirVarias [(0,"Hola"),(-10,"Chau"),(15,"Felicidades"),(2,"etc."),(9,"a")] (vacio (\x y->x `mod` 5 < y `mod` 5))
 
+diccOrdenado::Diccionario Int Int
+diccOrdenado = definirVarias [(0,1),(1,2),(2,3),(3,4),(4,5)] (vacio (<))
+
+diccVacio::Diccionario String String
+diccVacio = definirVarias [] (vacio (<))
+
+
 --Ejecución de los tests
 main :: IO Counts
 main = do runTestTT allTests
@@ -116,9 +123,15 @@ testsEj8 = test [
   ]
   
 testsEj9 = test [
-  0 ~=? 0 --Cambiar esto por tests verdaderos.
+  [] ~=? claves diccVacio,
+  [0,1,2,3,4] ~=? claves diccOrdenado,
+  ["auto","calle","casa","escalera","inicio","ropero"] ~=? claves dicc2,
+  claves dicc1 ++ [999] ~=? claves (definir 999 "etc" dicc1)
   ]
   
 testsEj10 = test [
-  Just "alfajor" ~=? búsquedaDelTesoro "inicio" ((=='a').head) dicc2
+  Just "alfajor" ~=? búsquedaDelTesoro "inicio" ((=='a').head) dicc2,
+  Just 5 ~=? búsquedaDelTesoro 0 (==5) diccOrdenado,
+  Nothing ~=? búsquedaDelTesoro 0 (==6) diccOrdenado,
+  Just "oro" ~=? búsquedaDelTesoro "inicio" (=="oro") (definir "alfajor" "oro" dicc2)
   ]
