@@ -80,12 +80,22 @@ definir c v d = case (estructura d) of
  Nothing -> Dicc (cmp d) (Just (Hoja (c, v))) 
  Just arbol -> Dicc (cmp d) (Just (insertar c v (cmp d) (fromJust (estructura d))))
 
-
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener c d = case (estructura d) of 
  Nothing -> Nothing 
  Just arbol -> obtenerAux c (cmp d) arbol
 
+{- La función obtenerAux no recorre más de una rama del árbol23 dado.
+Esta afirmación se puede asegurar teniendo en cuenta el Orden Normal de Elección de Subexpresiones 
+en el procedimiento de Reducción de Expresiones: tanto la función obtenerADos como obtenerATres
+se resuelven recorriendo el subárbol correspondiente según el dato buscado, observando
+los datos alojados en el nodo correspondiente. Pero esto se hace con sentencias del tipo
+IF-THEN-ELSE, las cuales se resuelven (por el Orden Normal de Haskell) antes que las recursiones
+a los subárboles, dejando al reducirse la expresión únicamente la llamada recursiva al
+subárbol por el cual se debe proseguir la búsqueda. 
+Extendiendo este razonamiento a cada paso recursivo, se llegará a una (y sólo una) hoja del
+árbol, momento en el cual la función tiene retorno (se halle la clave buscada o no).
+-}
 obtenerAux::Eq clave=>clave->Comp clave->Arbol23 (clave,valor) clave->Maybe valor
 obtenerAux c cmp a = foldA23 (obtenerHoja c) (obtenerADos c cmp) (obtenerATres c cmp) a
 

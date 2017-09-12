@@ -45,6 +45,18 @@ diccOrdenado = definirVarias [(0,1),(1,2),(2,3),(3,4),(4,5)] (vacio (<))
 diccVacio::Diccionario String String
 diccVacio = definirVarias [] (vacio (<))
 
+diccA1::Diccionario Int Int
+diccA1 = definir 0 0 (vacio (<))
+diccA2::Diccionario Int Int
+diccA2 = definir 1 0 (diccA1)
+diccA3::Diccionario Int Int
+diccA3 = definir 2 0 (diccA2)
+diccB1::Diccionario Int Int
+diccB1 = definir 2 0 (vacio (<))
+diccB2::Diccionario Int Int
+diccB2 = definir 1 0 (diccB1)
+diccB3::Diccionario Int Int
+diccB3 = definir 0 0 (diccB2)
 
 --Ejecución de los tests
 main :: IO Counts
@@ -111,11 +123,17 @@ testsEj5 = test [
   ]
 
 testsEj6 = test [
-  0 ~=? 0 --Cambiar esto por tests verdaderos.
+  [] ~=? claves (diccVacio)
   ]
 
 testsEj7 = test [
-  0 ~=? 0 --Cambiar esto por tests verdaderos.
+  [0] ~=? claves(diccA1),
+  [0,1] ~=? claves(diccA2),
+  [0,1,2] ~=? claves(diccA3),
+  [2] ~=? claves(diccB1),
+  [1,2] ~=? claves(diccB2),
+  [0,1,2] ~=? claves(diccB3),
+  claves(diccA3) ~=? claves(diccB3)
   ]
 
 testsEj8 = test [
