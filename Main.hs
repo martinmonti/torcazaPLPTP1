@@ -16,8 +16,8 @@ esTesoroONothing esTesoro (Just posibleTesoro) = esTesoro posibleTesoro
 
 obtenerONothing::Eq a=>Diccionario a a -> Maybe a -> Maybe a
 obtenerONothing d c = case c of
- Nothing -> Nothing
- Just c -> obtener c d
+ 	Nothing -> Nothing
+ 	Just c -> obtener c d
 
 {- Arbol de prueba: -}
 

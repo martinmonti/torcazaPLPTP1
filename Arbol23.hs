@@ -52,8 +52,8 @@ hojas = foldA23 (\x -> [x]) (\b x y -> x ++ y) (\b c x y z -> x ++ y ++ z)
 
 esHoja::Arbol23 a b->Bool
 esHoja ar = case ar of
-		  		Hoja a -> True
-		  		otherwise -> False
+		  	Hoja a -> True
+		  	otherwise -> False
 
 mapA23::(a->c)->(b->d)->Arbol23 a b->Arbol23 c d
 mapA23 f g arb = foldA23 (\val -> (Hoja (f val)))
@@ -65,15 +65,15 @@ mapA23 f g arb = foldA23 (\val -> (Hoja (f val)))
 incrementarHojas::Num a =>Arbol23 a b->Arbol23 a b
 incrementarHojas = mapA23 (+1) id
 
-
 --Trunca el árbol hasta un determinado nivel. Cuando llega a 0, reemplaza el resto del árbol por una hoja con el valor indicado.
 --Funciona para árboles infinitos.
 
 truncar::a->Integer->Arbol23 a b->Arbol23 a b
 truncar e lim arb = if (lim==0) then (Hoja e) else 
 			foldA23 (\val ->(\i -> if(i==0) then (Hoja e) else (Hoja val) ))
-		 	    (\val ai ad ->(\i-> if (i-1==0) then (Dos val (Hoja e) (Hoja e)) else (Dos val (ai (i-1)) (ad (i-1))) ))
-		 	    (\val val2 ai ac ad ->(\i-> if (i-1==0) then (Tres val val2 (Hoja e) (Hoja e) (Hoja e)) else (Tres val val2 (ai (i-1)) (ac (i-1)) (ad (i-1))) )) arb lim
+		 	   	(\val ai ad ->(\i-> if (i-1==0) then (Dos val (Hoja e) (Hoja e)) else (Dos val (ai (i-1)) (ad (i-1))) ))
+		 	    	(\val val2 ai ac ad ->(\i-> if (i-1==0) then (Tres val val2 (Hoja e) (Hoja e) (Hoja e)) 
+									else (Tres val val2 (ai (i-1)) (ac (i-1)) (ad (i-1))) )) arb lim
 
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
@@ -86,6 +86,7 @@ evaluar a = foldA23 (\val -> val)
 --evaluar (truncar 0 6 arbolito3) = 22 = (1*2-3)+(2*3-4)+(3*4-5)+(4*5-6)
 
 {- Árboles de ejemplo. -}
+
 arbolito1::Arbol23 Char Int
 arbolito1 = Tres 0 1
         (Dos 2 (Hoja 'a') (Hoja 'b'))

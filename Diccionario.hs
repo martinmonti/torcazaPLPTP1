@@ -82,8 +82,8 @@ definir c v d = case (estructura d) of
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener c d = case (estructura d) of 
- Nothing -> Nothing 
- Just arbol -> obtenerAux c (cmp d) arbol
+			Nothing -> Nothing 
+ 			Just arbol -> obtenerAux c (cmp d) arbol
 
 {- La función obtenerAux no recorre más de una rama del árbol23 dado.
 Esta afirmación se puede asegurar teniendo en cuenta el Orden Normal de Elección de Subexpresiones 
@@ -96,6 +96,7 @@ subárbol por el cual se debe proseguir la búsqueda.
 Extendiendo este razonamiento a cada paso recursivo, se llegará a una (y sólo una) hoja del
 árbol, momento en el cual la función tiene retorno (se halle la clave buscada o no).
 -}
+
 obtenerAux::Eq clave=>clave->Comp clave->Arbol23 (clave,valor) clave->Maybe valor
 obtenerAux c cmp a = foldA23 (obtenerHoja c) (obtenerADos c cmp) (obtenerATres c cmp) a
 
@@ -112,9 +113,11 @@ obtenerATres c1 comp c2 c3 a23Izq a23Med a23Der = if comp c1 c2 then a23Izq else
 
 claves::Diccionario clave valor -> [clave]
 claves d = case (estructura d) of 
- Nothing -> []
- (Just z) -> clavesAux z
+ 			Nothing -> []
+ 			(Just z) -> clavesAux z
 
+--si el diccionario tiene un arbol no vacio en su estructura, esta funcion es la que realmente 
+-- devuelve las claves (primera componente de cada hoja)
 clavesAux::Arbol23 (clave,valor) clave -> [clave]
 clavesAux arb = foldA23 (\x -> [fst x]) (\b x y -> x ++ y) (\b c x y z -> x ++ y ++ z) arb
 
@@ -122,25 +125,21 @@ clavesAux arb = foldA23 (\x -> [fst x]) (\b x y -> x ++ y) (\b c x y z -> x ++ y
 
 arbolitoTest::Arbol23 (Int, Char) Int
 arbolitoTest = Tres 0 1
-        (Dos 2 (Hoja (7,'a')) (Hoja (3,'b')))
-        (Tres 3 4 (Hoja (54,'c')) (Hoja (65,'d')) (Dos 5 (Hoja (6,'e')) (Hoja (7,'f'))))
-        (Dos 6 (Hoja (3,'g')) (Dos 7 (Hoja (4,'h')) (Hoja (5,'i'))))
+               (Dos 2 (Hoja (7,'a')) (Hoja (3,'b')))
+               (Tres 3 4 (Hoja (54,'c')) (Hoja (65,'d')) (Dos 5 (Hoja (6,'e')) (Hoja (7,'f'))))
+               (Dos 6 (Hoja (3,'g')) (Dos 7 (Hoja (4,'h')) (Hoja (5,'i'))))
 diccTest=Dicc (<) (Just arbolitoTest)
-
-
 
 arbolitoTest2::Arbol23 (Int, Char) Int
 arbolitoTest2 = (Tres 5 8 (Hoja (4,'a')) (Hoja (7,'e')) (Dos 10 (Hoja (9,'s')) (Hoja (17,'w'))))
-       
 diccTest2=Dicc (<) (Just arbolitoTest2)
---test: obtener 20 ( (definir 10 'x' (definir 20 'n' diccTest2)))
---test: obtener 10 ( (definir 10 'x' (definir 20 'n' diccTest2)))
 
 dicc1::Diccionario Int String
 dicc1 = definirVarias [(0,"Hola"),(-10,"Chau"),(15,"Felicidades"),(2,"etc."),(9,"a")] (vacio (<))
 
 dicc2::Diccionario String String
-dicc2 = definirVarias [("inicio","casa"),("auto","flores"),("calle","auto"),("casa","escalera"),("ropero","alfajor"),("escalera","ropero")] (vacio (<))
+dicc2 = definirVarias [("inicio","casa"),("auto","flores"),("calle","auto"),("casa","escalera"),
+				("ropero","alfajor"),("escalera","ropero")] (vacio (<))
 
 dicc3::Diccionario Int String
 dicc3 = definirVarias [(0,"Hola"),(-10,"Chau"),(15,"Felicidades"),(2,"etc."),(9,"a")] (vacio (\x y->x `mod` 5 < y `mod` 5))
