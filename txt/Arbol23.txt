@@ -68,37 +68,12 @@ incrementarHojas = mapA23 (+1) id
 --Trunca el árbol hasta un determinado nivel. Cuando llega a 0, reemplaza el resto del árbol por una hoja con el valor indicado.
 --Funciona para árboles infinitos.
 
---truncar::a->Integer->Arbol23 a b->Arbol23 a b
---truncar e lim arb =foldA23 (\val ->(\i -> aux i hojaE (Hoja val)))
---		 	   	(\val ai ad ->(\i-> aux i hojaE (Dos val (ai (i-1)) (ad (i-1))) ))
---		 	    	(\val val2 ai ac ad ->(\i-> aux i hojaE (Tres val val2 (ai (i-1)) (ac (i-1)) (ad (i-1))) )) 
---				arb lim
---			where hojaE = Hoja e
---aux:: Integer-> Arbol23 a b ->Arbol23 a b ->Arbol23 a b
---aux i h a = if (i==0) then h else a
-
-
 truncar::a->Integer->Arbol23 a b->Arbol23 a b
-truncar e lim arb = foldA23 (\val ->(\i -> hojaORama i hojaE (Hoja val)))
-		 	    (\val ai ad ->(\i->let iDec=(i-1) in hojaORama i hojaE (Dos val (ai iDec) (ad iDec)) ))
-		 	    (\val val2 ai ac ad ->(\i->let iDec=(i-1) in hojaORama i hojaE (Tres val val2 (ai iDec) (ac iDec) (ad iDec)) )) arb lim
-		    where hojaE = Hoja e
-
-hojaORama:: Integer-> Arbol23 a b ->Arbol23 a b ->Arbol23 a b
-hojaORama i h a = if (i==0) then h else a
-
-{-
-
-truncar::a->Integer->Arbol23 a b->Arbol23 a b
-truncar e lim arb =foldA23 (\val ->(\i -> if (i==0) then hojaE else (Hoja val)))
-		 	   	(\val ai ad ->(\i-> if (i==0) then hojaE else (Dos val (ai (i-1)) (ad (i-1))) ))
-		 	    	(\val val2 ai ac ad ->(\i-> if (i==0) then hojaE else (Tres val val2 (ai (i-1)) (ac (i-1)) (ad (i-1))) )) 
-				arb lim
-			where hojaE = (Hoja e)
-
-aux:: Integer-> Arbol23->Arbol23
-aux i a = if (i==0) then hojaE else a
--}
+truncar e lim arb = if (lim==0) then (Hoja e) else 
+			foldA23 (\val ->(\i -> if(i==0) then (Hoja e) else (Hoja val) ))
+		 	   	(\val ai ad ->(\i-> if (i-1==0) then (Dos val (Hoja e) (Hoja e)) else (Dos val (ai (i-1)) (ad (i-1))) ))
+		 	    	(\val val2 ai ac ad ->(\i-> if (i-1==0) then (Tres val val2 (Hoja e) (Hoja e) (Hoja e)) 
+									else (Tres val val2 (ai (i-1)) (ac (i-1)) (ad (i-1))) )) arb lim
 
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
