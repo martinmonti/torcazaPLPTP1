@@ -38,27 +38,27 @@ pad i = replicate i ' '
 --foldA23::
 foldA23 ::(a->c)->(b->c->c->c)->(b->b->c->c->c->c)->Arbol23 a b->c
 foldA23 f g h (Hoja a) = f a
-foldA23 f g h (Dos b ar1 ar2) = g b (foldA23 f g h ar1) (foldA23 f g h ar2)
-foldA23 f g h (Tres b c ar1 ar2 ar3) = h b c (foldA23 f g h ar1) (foldA23 f g h ar2) (foldA23 f g h ar3) 
-
+foldA23 f g h (Dos b ar1 ar2) = g b (fold ar1) (fold ar2) where fold = foldA23 f g h
+foldA23 f g h (Tres b c ar1 ar2 ar3) = h b c (fold ar1) (fold ar2) (fold ar3) where fold = foldA23 f g h
+		
 
 --Lista en preorden de los internos del árbol.
 internos::Arbol23 a b->[b]
-internos = foldA23 (\x -> []) (\b x y -> b : x ++ y) (\b c x y z -> b : c : (x ++ y ++ z))
+internos = foldA23 (const []) (\b x y -> b : x ++ y) (\b c x y z -> b : c : (x ++ y ++ z))
 
 --Lista las hojas de izquierda a derecha.
 hojas::Arbol23 a b->[a]
-hojas = foldA23 (\x -> [x]) (\b x y -> x ++ y) (\b c x y z -> x ++ y ++ z)
+hojas = foldA23 (\x -> [x]) (\b-> (++)) (\_ _ x y z -> x ++ y ++ z)
 
 esHoja::Arbol23 a b->Bool
 esHoja ar = case ar of
-		  	Hoja a -> True
+		  	Hoja _ -> True
 		  	otherwise -> False
 
 mapA23::(a->c)->(b->d)->Arbol23 a b->Arbol23 c d
-mapA23 f g arb = foldA23 (\val -> (Hoja (f val)))
+mapA23 f g = foldA23 (\val -> (Hoja (f val)))
 		 	 (\val ai ad ->(Dos (g val) ai ad))
-		 	 (\val val2 ai ac ad ->(Tres (g val) (g val2) ai ac ad)) arb
+		 	 (\val val2 ai ac ad ->(Tres (g val) (g val2) ai ac ad))
 
 --Ejemplo de uso de mapA23.
 --Incrementa en 1 el valor de las hojas.
@@ -103,9 +103,9 @@ aux i a = if (i==0) then hojaE else a
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
 evaluar::Arbol23 a (a->a->a)->a
-evaluar a = foldA23 (\val -> val)
-		    (\val ai ad -> val ai ad)
-		    (\val val2 ai ac ad ->(val2 (val ai ac) ad)) a
+evaluar = foldA23 (id)
+		  (id)
+		  (\val val2 ai ac ad ->(val2 (val ai ac) ad))
 
 --Ejemplo:
 --evaluar (truncar 0 6 arbolito3) = 22 = (1*2-3)+(2*3-4)+(3*4-5)+(4*5-6)
