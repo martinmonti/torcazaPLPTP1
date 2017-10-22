@@ -99,6 +99,10 @@ testsEj3 = test [
 
 testsEj4 = test [
   [1,2,3,2,3,4,3,4,5,4,5,6,0,0,0,0,0] ~=? hojas (truncar 0 6 arbolito3),
+  [0] ~=? hojas (truncar 0 0 arbolito5),
+  ['a'] ~=? internos (truncar 0 1 arbolito5),
+  ['a','b','c','a'] ~=? internos (truncar 0 2 arbolito5),
+  [0,0,0,0,0] ~=? hojas (truncar 0 2 arbolito5),
   [0,0,0,0,0,0,0,0,0,0] ~=? hojas (truncar 0 3 arbolito4),
   [1,1,1,1] ~=? hojas (truncar 1 2 arbolito4),
   ['w','w','w','w','w','w','w'] ~=? hojas (truncar 'w' 2 arbolito1),
