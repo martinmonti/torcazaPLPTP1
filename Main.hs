@@ -11,8 +11,7 @@ búsquedaDelTesoro::Eq a=>a->(a->Bool)->Diccionario a a->Maybe a
 búsquedaDelTesoro pista esTesoro d = (head (filter (esTesoroONothing esTesoro) (iterate (obtenerONothing d) (Just pista))))
 
 esTesoroONothing::(a->Bool)->Maybe a->Bool
-esTesoroONothing esTesoro Nothing = True
-esTesoroONothing esTesoro (Just posibleTesoro) = esTesoro posibleTesoro
+esTesoroONothing esTesoro = maybe True esTesoro
 
 obtenerONothing::Eq a=>Diccionario a a -> Maybe a -> Maybe a
 obtenerONothing d c = case c of

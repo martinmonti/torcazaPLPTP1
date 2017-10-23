@@ -48,7 +48,7 @@ internos = foldA23 (const []) (\b x y -> b : x ++ y) (\b c x y z -> b : c : (x +
 
 --Lista las hojas de izquierda a derecha.
 hojas::Arbol23 a b->[a]
-hojas = foldA23 (\x -> [x]) (\b-> (++)) (\_ _ x y z -> x ++ y ++ z)
+hojas = foldA23 (\x -> [x]) (const(++)) (\_ _ x y z -> x ++ y ++ z)
 
 esHoja::Arbol23 a b->Bool
 esHoja ar = case ar of
