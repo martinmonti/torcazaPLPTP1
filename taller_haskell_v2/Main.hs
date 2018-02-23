@@ -55,7 +55,7 @@ mapAnillo f a = l2fa f $ a2L a
 
 --Ejercicio 5
 palabraFormable :: String -> [Anillo Char] -> Bool
-palabraFormable palabra anillos = and([ enAnillo (palabra!!i) (anillos!!i) | i <- [0..length(palabra)]])
+palabraFormable palabra anillos = and([ enAnillo (palabra!!i) (anillos!!i) | i <- [0..length(palabra)-1]])
 
 --Ejercicio 6
 anillos:: Eq a => [a] -> [Anillo a]
