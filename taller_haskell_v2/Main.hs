@@ -35,7 +35,7 @@ enAnillo e a = elem e $ a2L a
 -- entonces a == Nothing.
 l2a:: Eq t => [t] -> Maybe (Anillo t)
 l2a l | null l = Nothing
-		| otherwise = Just $ foldl (\a e -> (avanzar (insertar e a))) (singleton $ head l ) (tail l)
+		| otherwise = Just $ avanzar $ foldl (\a e -> (avanzar (insertar e a))) (singleton $ head l ) (tail l)
 
 filterAnillo :: Eq t => (t -> Bool) -> Anillo t -> Maybe (Anillo t)
 filterAnillo f a = l2a $ filter f (a2L a) 
@@ -48,7 +48,7 @@ filterAnillo f a = l2a $ filter f (a2L a)
 --			| otherwise = Just $ foldl (\a e -> (avanzar (insertar (f e) a))) (singleton $ f $ head l ) (tail l)
 -- Versión que NO soporta Lista Vacía:
 l2fa:: Eq a => Eq b => (a->b) -> [a] -> Anillo b
-l2fa f l = foldl (\a e -> (avanzar (insertar (f e) a))) (singleton $ f $ head l ) (tail l)
+l2fa f l = avanzar $ foldl (\a e -> (avanzar (insertar (f e) a))) (singleton $ f $ head l ) (tail l)
 
 mapAnillo:: Eq a => Eq b => (a -> b) -> Anillo a -> Anillo b
 mapAnillo f a = l2fa f $ a2L a 
@@ -167,10 +167,15 @@ testsEj3 = test [
   False ~=? enAnillo 3 (fromJust (filterAnillo (>5) anilloEjemplo))
   ]
 testsEj4 = test [
-  True ~=? enAnillo 5 (mapAnillo (mod 6) anilloEjemplo),
-  True ~=? enAnillo 2 (mapAnillo (mod 6) anilloEjemplo),
-  True ~=? enAnillo 3 (mapAnillo (mod 6) anilloEjemplo),
-  True ~=? enAnillo 1 (mapAnillo (mod 6) anilloEjemplo),
+  True ~=? enAnillo 9 (mapAnillo (+1) anilloEjemplo),
+  True ~=? enAnillo 6 (mapAnillo (+1) anilloEjemplo),
+  False ~=? enAnillo 5 (mapAnillo (+1) anilloEjemplo),
+  Just 8 ~=? (siguiente (mapAnillo (+1) anilloEjemplo) 4 ),
+  6 ~=? actual (mapAnillo (+1) anilloEjemplo),
+  True ~=? enAnillo 6 (mapAnillo (*2) anilloEjemplo),
+  True ~=? enAnillo 14 (mapAnillo (*2) anilloEjemplo),
+  False ~=? enAnillo 5 (mapAnillo (*2) anilloEjemplo),
+  Just 14 ~=? siguiente (mapAnillo (*2) anilloEjemplo) 6,
   10 ~=? actual (mapAnillo (*2) anilloEjemplo)
   ]
 testsEj5 = test [
@@ -181,4 +186,3 @@ testsEj5 = test [
 --testsEj6 = test [
 --  anillos ['a', 'b'] ~=? [anilloUnico, anilloUnicoB, insertar 'b' anilloUnico]
 --  ]
-
